@@ -1,0 +1,82 @@
+{
+  "name": "AI Agent Launch Checklist",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        400,
+        304
+      ],
+      "notes": "Start the workflow manually"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Outputs fixed AI agent launch checklist\ntry {\n  return [\n    {\n      checklist: [\n        \"Define your agent’s purpose\",\n        \"Choose your LLM (e.g., Claude, GPT-4o)\",\n        \"Set input/output prompts\",\n        \"Build memory (e.g., vector DB)\",\n        \"Test edge cases\",\n        \"Deploy and monitor\"\n      ]\n    }\n  ];\n} catch (error) {\n  return [{ error: error.message }];\n}"
+      },
+      "id": "2",
+      "name": "Create Checklist",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        608,
+        304
+      ],
+      "notes": "Outputs a static checklist as a JSON object"
+    },
+    {
+      "parameters": {
+        "toEmail": "recipient@example.com",
+        "subject": "🧠 AI Agent Launch Checklist",
+        "text": "Here is your AI Agent Launch Checklist:\n\n{{$json[\"checklist\"].map((item, idx) => `${idx+1}. ${item}`).join('\\n')}}\n\nHappy building!",
+        "html": "<p>Here is your <b>AI Agent Launch Checklist</b>:</p><ol>{{$json[\"checklist\"].map(item => `<li>${item}</li>`).join('')}}</ol><p>Happy building!</p>",
+        "options": {}
+      },
+      "id": "3",
+      "name": "Send Email (Checklist)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        800,
+        304
+      ],
+      "notes": "Emails the checklist to a fixed address (use your own credentials and recipient email)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Create Checklist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Checklist": {
+      "main": [
+        [
+          {
+            "node": "Send Email (Checklist)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "fd21d21d-9037-4a1c-a07e-f484b5764c14",
+  "meta": {
+    "instanceId": "dc31add4c8bb5242c2b9d1409fe16a38a9d52516e9259001198fc069f5f7ddf3"
+  },
+  "id": "fSOjDip7p8cyq0pP",
+  "tags": []
+}
